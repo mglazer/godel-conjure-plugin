@@ -3,6 +3,10 @@ executors:
     docker:
       - image: palantirtechnologies/go:go-darwin-linux-no-cgo-1.13.4-java-11-t28
     working_directory: /go/src/github.com/palantir/godel-conjure-plugin
+  darwin-linux-no-cgo-java-11-ir-gen-cli-bundler:
+    docker:
+      - image: palantirtechnologies/go:go-darwin-linux-no-cgo-1.13.4-java-11-t28
+    working_directory: /go/src/github.com/palantir/godel-conjure-plugin/ir-gen-cli-bundler
 
 excutor: &executor
   executor: darwin-linux-no-cgo-java-11
@@ -10,8 +14,8 @@ excutor: &executor
 version: 2.1
 
 orbs:
-  go: palantir/go@0.0.13
-  godel: palantir/godel@0.0.11
+  go: palantir/go@0.0.14
+  godel: palantir/godel@0.0.14
 
 all-tags-filter: &all-tags-filter
   filters:
@@ -22,6 +26,11 @@ workflows:
   version: 2
   verify-test-dist-publish:
     jobs:
+      - godel/verify:
+          name: ir-gen-cli-bundler-verify
+          checkout-path: /go/src/github.com/palantir/godel-conjure-plugin
+          include-tests: true
+          executor: darwin-linux-no-cgo-java-11-ir-gen-cli-bundler
       - godel/verify:
           name: verify
           <<: *executor
@@ -41,6 +50,7 @@ workflows:
           bintray-repo: releases
           bintray-product: godel-conjure-plugin
           requires:
+            - ir-gen-cli-bundler-verify
             - verify
             - test
             - dist
