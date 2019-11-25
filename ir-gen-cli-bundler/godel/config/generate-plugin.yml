@@ -1,0 +1,6 @@
+generators:
+  conjureircli:
+    go-generate-dir: conjureircli/generator
+    gen-paths:
+      paths:
+        - conjureircli/internal
